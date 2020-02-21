@@ -23,6 +23,20 @@ def postcreate(request):
     blog.save()
     return redirect('/crudapp/detail/' + str(blog.id))
 
+def update(request, blog_id):
+    blog = Blog.objects.get(id=blog_id)
+
+    if request.method == "POST":
+        blog.title = request.GET['title']
+        blog.body = request.GET['body']
+        blog.pub_date = timezone.datetime.now()
+        blog.save()
+        return redirect('/crudapp/detail/' + str(blog.id))
+
+    else:
+        return render(request, 'create.html')
+
+
 def new(request):
     full_text = request.GET['fulltext']
 
