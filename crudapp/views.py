@@ -6,7 +6,7 @@ from .forms import BlogUpdate
 
 def home(request):
     blogs = Blog.objects.order_by('-id')
-    blog_list = Blog.objects.all()
+    blog_list = Blog.objects.all().order_by('-id')
     paginator = Paginator(blog_list,3)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -66,3 +66,15 @@ def new(request):
             word_dictionary[word] = 1
 
     return render(request, 'new.html', {'fulltext': full_text, 'total': len(word_list), 'dictionary': word_dictionary.items()} )
+
+def search(request):
+    blogs = Blog.objects.all().order_by('-id')
+
+    q = request.POST.get('q', "") 
+
+    if q:
+        blogs = blogs.filter(title__icontains=q)
+        return render(request, 'search.html', {'blogs' : blogs, 'q' : q})
+    
+    else:
+        return render(request, 'search.html')
